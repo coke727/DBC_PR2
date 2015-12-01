@@ -5,12 +5,19 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
     <body>
-        <div>TODO write content</div>
+      <h1>Login Vinoteca</h1>
+      <form method="post" action="index.html">
+        <p><input name="login" value="" placeholder="Username" type="text"></p>
+        <p><input name="password" value="" placeholder="Password" type="password"></p>
+        <p class="remember_me">
+          <label>
+            <input name="remember_me" id="remember_me" type="checkbox">
+            Soy Empleado
+          </label>
+        </p>
+        <p class="submit"><input name="commit" value="Login" type="submit"></p>
+      </form>
+
     </body>
 </html>
