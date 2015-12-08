@@ -17,7 +17,7 @@ import modelo.Preferencia;
 @Remote
 public interface controladorAbonadoRemote {
 
-    String getNif(String nif);
+    String getNif(String login);
 
     boolean isPasswdOK(String login, String passwd);
 

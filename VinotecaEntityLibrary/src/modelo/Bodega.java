@@ -128,7 +128,7 @@ public class Bodega implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Bodega[ id=" + id + " ]";
+        return "modelo.Bodega[ id=" + id + " ]";
     }
     
 }

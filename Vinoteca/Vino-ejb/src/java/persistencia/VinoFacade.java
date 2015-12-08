@@ -5,10 +5,10 @@
  */
 package persistencia;
 
-import modelo.Vino;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import modelo.Vino;
 
 /**
  *
@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class VinoFacade extends AbstractFacade<Vino> implements VinoFacadeLocal {
 
-    @PersistenceContext(unitName = "VinoPU")
+    @PersistenceContext(unitName = "Vino-ejbPU")
     private EntityManager em;
 
     @Override

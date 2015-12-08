@@ -7,7 +7,9 @@ package modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,10 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -65,6 +69,8 @@ public class Pedido implements Serializable {
     private Integer abonado;
     @Column(name = "NIF")
     private String nif;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "numeropedido")
+    private List<Lineapedido> lineapedidoList;
     @JoinColumn(name = "ESTADO", referencedColumnName = "CLAVE")
     @ManyToOne
     private Estadopedido estado;
@@ -153,6 +159,15 @@ public class Pedido implements Serializable {
         this.nif = nif;
     }
 
+    @XmlTransient
+    public List<Lineapedido> getLineapedidoList() {
+        return lineapedidoList;
+    }
+
+    public void setLineapedidoList(List<Lineapedido> lineapedidoList) {
+        this.lineapedidoList = lineapedidoList;
+    }
+
     public Estadopedido getEstado() {
         return estado;
     }
@@ -183,7 +198,7 @@ public class Pedido implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Pedido[ numero=" + numero + " ]";
+        return "modelo.Pedido[ numero=" + numero + " ]";
     }
     
 }

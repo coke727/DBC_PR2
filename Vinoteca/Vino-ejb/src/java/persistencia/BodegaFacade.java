@@ -5,10 +5,10 @@
  */
 package persistencia;
 
-import modelo.Bodega;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import modelo.Bodega;
 
 /**
  *
@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class BodegaFacade extends AbstractFacade<Bodega> implements BodegaFacadeLocal {
 
-    @PersistenceContext(unitName = "VinoPU")
+    @PersistenceContext(unitName = "Vino-ejbPU")
     private EntityManager em;
 
     @Override

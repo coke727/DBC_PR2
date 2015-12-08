@@ -126,7 +126,7 @@ public class Preferencia implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Preferencia[ id=" + id + " ]";
+        return "modelo.Preferencia[ id=" + id + " ]";
     }
     
 }

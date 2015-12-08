@@ -60,6 +60,8 @@ public class Persona implements Serializable {
     @Column(name = "CUENTABANCARIA")
     private String cuentabancaria;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nif")
+    private List<Empleado> empleadoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "nif")
     private List<Abonado> abonadoList;
 
     public Persona() {
@@ -135,6 +137,15 @@ public class Persona implements Serializable {
     }
 
     @XmlTransient
+    public List<Empleado> getEmpleadoList() {
+        return empleadoList;
+    }
+
+    public void setEmpleadoList(List<Empleado> empleadoList) {
+        this.empleadoList = empleadoList;
+    }
+
+    @XmlTransient
     public List<Abonado> getAbonadoList() {
         return abonadoList;
     }
@@ -165,7 +176,7 @@ public class Persona implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Persona[ nif=" + nif + " ]";
+        return "modelo.Persona[ nif=" + nif + " ]";
     }
     
 }

@@ -17,10 +17,12 @@ import modelo.Vino;
 @Remote
 public interface controladorVinoRemote {
 
-    List<Vino> getVinos(String origen, char categoria);
+    List<Vino> getVinos(String origen, String categoria);
 
-    Referencia getReferencia(int vinoID);
+    List<Referencia> getReferencias(int vinoID);
 
     void addReferencia(Referencia referencia);
+
+    Vino getVino(int vinoID);
     
 }

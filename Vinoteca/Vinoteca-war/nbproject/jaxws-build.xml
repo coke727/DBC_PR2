@@ -26,21 +26,21 @@
             <isset property="conf.dir"/>
         </condition>
     </target>
-    <target name="wsimport-client-VinotecaWebService" depends="wsimport-init">
-        <mkdir dir="${build.generated.dir}/jax-wsCache/VinotecaWebService"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/VinotecaWebService" destdir="${build.generated.dir}/jax-wsCache/VinotecaWebService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/VinotecaWebService/wsdl/localhost_8080/VinotecaWebService/VinotecaWebService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/VinotecaWebService/VinotecaWebService?wsdl" xnocompile="true" xendorsed="true" package="webclient">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/VinotecaWebService/wsdl/localhost_8080/VinotecaWebService/VinotecaWebService.wsdl"/>
-            <produces dir="${build.generated.dir}/jax-wsCache/VinotecaWebService"/>
+    <target name="wsimport-client-PedidoWS" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/PedidoWS"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/PedidoWS" destdir="${build.generated.dir}/jax-wsCache/PedidoWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/PedidoWS/wsdl/localhost_8080/VinotecaWS-war/PedidoWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/VinotecaWS-war/PedidoWS?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/PedidoWS/wsdl/localhost_8080/VinotecaWS-war/PedidoWS.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/PedidoWS"/>
         </wsimport>
         <copy todir="${build.generated.sources.dir}/jax-ws">
-            <fileset dir="${build.generated.dir}/jax-wsCache/VinotecaWebService">
+            <fileset dir="${build.generated.dir}/jax-wsCache/PedidoWS">
                 <include name="**/*.java"/>
             </fileset>
         </copy>
     </target>
-    <target name="wsimport-client-clean-VinotecaWebService" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/webclient"/>
-        <delete dir="${build.generated.dir}/jax-wsCache/VinotecaWebService"/>
+    <target name="wsimport-client-clean-PedidoWS" depends="-init-project">
+        <delete dir="${build.generated.sources.dir}/jax-ws/services"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/PedidoWS"/>
     </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-VinotecaWebService"/>
+    <target name="wsimport-client-generate" depends="wsimport-client-PedidoWS"/>
 </project>

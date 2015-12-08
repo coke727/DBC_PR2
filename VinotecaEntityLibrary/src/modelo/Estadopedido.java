@@ -101,7 +101,7 @@ public class Estadopedido implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Estadopedido[ clave=" + clave + " ]";
+        return "modelo.Estadopedido[ clave=" + clave + " ]";
     }
     
 }

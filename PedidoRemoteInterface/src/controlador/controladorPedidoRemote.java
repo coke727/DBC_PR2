@@ -22,6 +22,6 @@ public interface controladorPedidoRemote {
 
     List<Pedido> getPedidosAbonado(String nif);
 
-    void editPedido(int numeroAbonado, String estado);
+    void editPedido(int numeroPedido, String estado);
     
 }

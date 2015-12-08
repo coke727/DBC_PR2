@@ -17,7 +17,7 @@ import modelo.Referencia;
 @Stateless
 public class ReferenciaFacade extends AbstractFacade<Referencia> implements ReferenciaFacadeLocal {
 
-    @PersistenceContext(unitName = "VinoPU")
+    @PersistenceContext(unitName = "Vino-ejbPU")
     private EntityManager em;
 
     @Override

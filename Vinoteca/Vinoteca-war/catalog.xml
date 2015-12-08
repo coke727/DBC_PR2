@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://localhost:8080/VinotecaWebService/VinotecaWebService?wsdl" uri="src/conf/xml-resources/web-service-references/VinotecaWebService/wsdl/localhost_8080/VinotecaWebService/VinotecaWebService.wsdl"/>
-    <system systemId="http://localhost:8080/VinotecaWebService/VinotecaWebService?xsd=1" uri="src/conf/xml-resources/web-service-references/VinotecaWebService/wsdl/localhost_8080/VinotecaWebService/VinotecaWebService.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/VinotecaWS-war/PedidoWS?wsdl" uri="src/conf/xml-resources/web-service-references/PedidoWS/wsdl/localhost_8080/VinotecaWS-war/PedidoWS.wsdl"/>
+    <system systemId="http://localhost:8080/VinotecaWS-war/PedidoWS?xsd=1" uri="src/conf/xml-resources/web-service-references/PedidoWS/wsdl/localhost_8080/VinotecaWS-war/PedidoWS.xsd_1.xsd"/>
 </catalog>

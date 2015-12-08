@@ -9,8 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,7 +33,6 @@ public class Abonado implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "NUMEROABONADO")
     private Integer numeroabonado;
@@ -116,7 +113,7 @@ public class Abonado implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Abonado[ numeroabonado=" + numeroabonado + " ]";
+        return "modelo.Abonado[ numeroabonado=" + numeroabonado + " ]";
     }
     
 }
