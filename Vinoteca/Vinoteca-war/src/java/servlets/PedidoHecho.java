@@ -36,7 +36,7 @@ public class PedidoHecho extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PedidoHecho</title>");            
+            out.println("<title>Pedido Completado</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>El pedido se ha realizado correctamente.</h1>");
@@ -73,7 +73,7 @@ public class PedidoHecho extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String volver = request.getParameter("return");
-        if(volver != null) {
+        if(volver != null) { //Se ha pulsado el botón de volver.
             RequestDispatcher rd = request.getRequestDispatcher("Login");
             rd.forward(request,response);
         }

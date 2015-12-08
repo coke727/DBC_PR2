@@ -7,7 +7,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import modelo.Bodega;
 import modelo.Referencia;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2015-12-08T18:01:36")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2015-12-08T22:19:06")
 @StaticMetamodel(Vino.class)
 public class Vino_ { 
 

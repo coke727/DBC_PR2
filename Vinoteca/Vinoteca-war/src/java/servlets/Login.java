@@ -27,6 +27,7 @@ public class Login extends HttpServlet {
     @EJB
     private controladorAbonadoRemote controladorAbonado;
     
+    private boolean errorLogin = false;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,7 +43,11 @@ public class Login extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-        out.println(getLoginError());
+            if(!errorLogin) {
+                out.println(getLogin());
+            } else {
+                out.println(getLoginError());
+            }
         }
     }
 
@@ -74,19 +79,29 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        boolean isEmpleado = (null != request.getParameter( "is_empleado" ));
-        if(!controladorAbonado.isAbonado(login)) {
-            processRequest(request, response);
-        } else if (!controladorAbonado.isPasswdOK(login, password)){
-            processRequest(request, response);
-        } else {
-            if(isEmpleado) response.sendRedirect("consultarPedidos");
-            else {
-                HttpSession session = request.getSession();
-                session.setAttribute("user",login);
-                RequestDispatcher rd = request.getRequestDispatcher("CrearPedido");
-                rd.forward(request,response);
+        String intentoLogin = request.getParameter("commit");
+        
+        if(intentoLogin != null) { //Si el acceso anterior ha sido un login
+            boolean isEmpleado = (null != request.getParameter( "is_empleado" ));
+            errorLogin = false;
+            if(!controladorAbonado.isAbonado(login)) { //El usuario no existe
+                errorLogin = true;
+                processRequest(request, response);
+            } else if (!controladorAbonado.isPasswdOK(login, password)){ //Password incorrecto
+                errorLogin = true;
+                processRequest(request, response);
+            } else {
+                if(isEmpleado) { //Si el usuario es un empleado
+                    response.sendRedirect("consultarPedidos");
+                } else { //usuario es un abonado
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user",login);
+                    RequestDispatcher rd = request.getRequestDispatcher("CrearPedido");
+                    rd.forward(request,response);
+                }
             }
+        } else { //Acceso por url
+            errorLogin = false;
         }
         
         processRequest(request, response);
@@ -103,12 +118,16 @@ public class Login extends HttpServlet {
         return "Short description";
     }// </editor-fold>
     
+    /**
+     * Devuelve la página de login en caso de haber un error de login.
+     * @return login : String
+     */
     private String getLoginError(){
         return "<!DOCTYPE html>"
                     +"<html>"
                     +"<head>"
                     +"<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>"
-                    +"<title>JSP Page</title>"
+                    +"<title>Login</title>"
                     +"</head>"
                     +"<body>"
                     +"<h1>Login Vinoteca</h1>"
@@ -116,6 +135,34 @@ public class Login extends HttpServlet {
                     +"<p><input name='login' value='' placeholder='Username' type='text'></p>"
                     +"<p><input name='password' value='' placeholder='Password' type='password'></p>"
                     +"<p> Error en los datos introducidos </p>"
+                    +"<p class='remember_me'>"
+                      +"<label>"
+                      +"  <input name='is_empleado' id='is_empleado' type='checkbox'>"
+                      +"  Soy Empleado"
+                      +"</label>"
+                    +"</p>"
+                    +"<p class='submit'><input name='commit' value='Login' type='submit'></p>"
+                    +"</form>"
+                    +"</body>"
+                    +"</html>";
+    }
+    
+    /**
+     * Devuelve la página de login
+     * @return login : string
+     */
+    private String getLogin(){
+        return "<!DOCTYPE html>"
+                    +"<html>"
+                    +"<head>"
+                    +"<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>"
+                    +"<title>Login</title>"
+                    +"</head>"
+                    +"<body>"
+                    +"<h1>Login Vinoteca</h1>"
+                    +"<form method='post' action='Login'>"
+                    +"<p><input name='login' value='' placeholder='Username' type='text'></p>"
+                    +"<p><input name='password' value='' placeholder='Password' type='password'></p>"
                     +"<p class='remember_me'>"
                       +"<label>"
                       +"  <input name='is_empleado' id='is_empleado' type='checkbox'>"

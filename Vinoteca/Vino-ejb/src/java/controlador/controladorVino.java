@@ -36,7 +36,8 @@ public class controladorVino implements controladorVinoRemote {
         List<modelo.Vino> vinos = vinoFacade.findAll();
         List<modelo.Vino> vinosBuscados = new ArrayList<>();
         for(modelo.Vino item: vinos){
-            if(categoria.equals(item.getCategoria()+"")){
+            System.out.println(item.getIddenominacion()+" | "+Integer.parseInt(origen)+" | "+(item.getIddenominacion() == Integer.parseInt(origen))+" ||| "+item.getCategoria()+" | "+categoria+" | "+categoria.equals(item.getCategoria()+""));
+            if(categoria.equals(item.getCategoria()+"") && (item.getIddenominacion() == Integer.parseInt(origen))){
                 vinosBuscados.add(item);
             }
         }

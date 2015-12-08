@@ -4,12 +4,13 @@ import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2015-12-08T18:01:36")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2015-12-08T22:19:06")
 @StaticMetamodel(Preferencia.class)
 public class Preferencia_ { 
 
     public static volatile SingularAttribute<Preferencia, String> denominacion;
     public static volatile SingularAttribute<Preferencia, Character> categoria;
+    public static volatile SingularAttribute<Preferencia, Integer> iddenominacion;
     public static volatile SingularAttribute<Preferencia, String> nif;
     public static volatile SingularAttribute<Preferencia, Integer> numeroabonado;
     public static volatile SingularAttribute<Preferencia, Integer> id;

@@ -51,7 +51,7 @@ public class controladorAbonado implements controladorAbonadoRemote {
         List<Preferencia> prefList = new ArrayList<>();
         
         for(Preferencia pref : preferencias) {
-            if(pref.getNumeroabonado() == abonado.getNumeroabonado()) prefList.add(pref);
+            if((int) abonado.getNumeroabonado() == pref.getNumeroabonado()) prefList.add(pref);
         }
         
         return prefList;

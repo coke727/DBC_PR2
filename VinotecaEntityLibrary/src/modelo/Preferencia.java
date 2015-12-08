@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Preferencia.findAll", query = "SELECT p FROM Preferencia p"),
     @NamedQuery(name = "Preferencia.findById", query = "SELECT p FROM Preferencia p WHERE p.id = :id"),
     @NamedQuery(name = "Preferencia.findByDenominacion", query = "SELECT p FROM Preferencia p WHERE p.denominacion = :denominacion"),
+    @NamedQuery(name = "Preferencia.findByIddenominacion", query = "SELECT p FROM Preferencia p WHERE p.iddenominacion = :iddenominacion"),
     @NamedQuery(name = "Preferencia.findByCategoria", query = "SELECT p FROM Preferencia p WHERE p.categoria = :categoria"),
     @NamedQuery(name = "Preferencia.findByNif", query = "SELECT p FROM Preferencia p WHERE p.nif = :nif"),
     @NamedQuery(name = "Preferencia.findByNumeroabonado", query = "SELECT p FROM Preferencia p WHERE p.numeroabonado = :numeroabonado")})
@@ -39,6 +40,9 @@ public class Preferencia implements Serializable {
     @Basic(optional = false)
     @Column(name = "DENOMINACION")
     private String denominacion;
+    @Basic(optional = false)
+    @Column(name = "IDDENOMINACION")
+    private int iddenominacion;
     @Basic(optional = false)
     @Column(name = "CATEGORIA")
     private Character categoria;
@@ -56,9 +60,10 @@ public class Preferencia implements Serializable {
         this.id = id;
     }
 
-    public Preferencia(Integer id, String denominacion, Character categoria, String nif, int numeroabonado) {
+    public Preferencia(Integer id, String denominacion, int iddenominacion, Character categoria, String nif, int numeroabonado) {
         this.id = id;
         this.denominacion = denominacion;
+        this.iddenominacion = iddenominacion;
         this.categoria = categoria;
         this.nif = nif;
         this.numeroabonado = numeroabonado;
@@ -78,6 +83,14 @@ public class Preferencia implements Serializable {
 
     public void setDenominacion(String denominacion) {
         this.denominacion = denominacion;
+    }
+
+    public int getIddenominacion() {
+        return iddenominacion;
+    }
+
+    public void setIddenominacion(int iddenominacion) {
+        this.iddenominacion = iddenominacion;
     }
 
     public Character getCategoria() {

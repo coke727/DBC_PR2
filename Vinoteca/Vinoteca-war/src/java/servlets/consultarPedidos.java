@@ -5,10 +5,12 @@
  */
 package servlets;
 
+import controlador.controladorAbonadoRemote;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +23,13 @@ import javax.xml.ws.WebServiceRef;
  */
 public class consultarPedidos extends HttpServlet {
 
+    @EJB
+    private controladorAbonadoRemote controladorAbonado;
+
     @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/VinotecaWS-war/PedidoWS.wsdl")
     private services.PedidoWS_Service service;
+    
+    private String nifActual = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,17 +48,19 @@ public class consultarPedidos extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet consultarPedidos</title>");            
+            out.println("<title>Consultar Pedidos</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Administración de pedidos:</h1>");
-            out.println("<h3>Aquí puede cambiar el estado de los pedidos.</h3>");
+            out.println("Aquí puede cambiar el estado de los pedidos.");
+            out.println("<h4>Pedidos Pendientes:</h4>");
             out.println("<div>");
             out.println("<form method=\"post\" action=\"consultarPedidos\">");
             out.println("<ul>");
+            //Obtenemos pedidos pendientes.
             List<services.Pedido> pendientes = getPedidosPendientes();
             if(pendientes.size()>0) {
-                for(services.Pedido item : pendientes) {
+                for(services.Pedido item : pendientes) { //Mostramos los pedidos
                    out.println("<li>");
                    out.println("Pedido " + item.getNumero()
                       +" <select name=\"estado\">"
@@ -69,6 +78,40 @@ public class consultarPedidos extends HttpServlet {
                 out.println("</form>");
             } else {
                 out.println("<p>No hay pedidos pendientes</p>");
+            }
+            out.println("<h4>Buscar pedidos de un usuario:</h4>");
+            out.println("<form method=\"post\" action=\"consultarPedidos\"><input type=\"text\" name=\"nif\"><input name=\"usrBuscar\" value=\"Buscar\" type=\"submit\"></form>");
+            out.println("<form method=\"post\" action=\"consultarPedidos\">");
+            if(!nifActual.equals("")) out.println("<p>Pedidos del Abonado con NIF: "+ nifActual+"</p>");
+            out.println("<ul>");
+            //Obtenemos los pedidos del usuario, en caso de no existir se mostrará como que no hay pedidos.
+            List<services.Pedido> pedidosUsuario = getPedidosAbonado(nifActual);
+            if(pedidosUsuario.size()>0) { //si existen se muestran
+                for(services.Pedido item : pedidosUsuario) {
+                   out.println("<li>");
+                   String estado = item.getEstado().getClave();
+                   String selectorP = ""; String selectorC = ""; String selectorT = ""; String selectorF = ""; String selectorA = ""; String selectorS = "";
+                   if(estado.equals("P")){selectorP = "selected";} else if(estado.equals("T")){selectorT = "selected";}else if(estado.equals("C")){selectorC = "selected";}else if(estado.equals("F")){selectorF = "selected";}else if(estado.equals("A")){selectorA = "selected";}else if(estado.equals("S")){selectorS = "selected";}
+                   out.println("Pedido " + item.getNumero()
+                      +" <select name=\"estado\">"
+                      +"<option value=\"P,"+item.getNumero()+"\" "+selectorP+">Pendiente</option>" 
+                      +"<option value=\"C,"+item.getNumero()+"\" "+selectorC+">Completado</option>" 
+                      +"<option value=\"T,"+item.getNumero()+"\" "+selectorT+">Tramitado</option>"
+                      +"<option value=\"F,"+item.getNumero()+"\" "+selectorF+">Facturado</option>"
+                      +"<option value=\"A,"+item.getNumero()+"\" "+selectorA+">Pagado</option>"
+                      +"<option value=\"S,"+item.getNumero()+"\" "+selectorS+">Servido</option>"
+                      +"</select>"
+                      +"</li>"); 
+                }
+                out.println("</ul>");
+                out.println("<p><input name=\"usrCommit\" value=\"Save\" type=\"submit\"></p>");
+                out.println("</form>");
+            } else {
+                if(nifActual.equals("")){
+                    out.println("<p>Seleccione un usuario.</p>");
+                } else {
+                    out.println("<p>No hay pedidos de este usuario.</p>");
+                }
             }
             out.println("</div>");
             out.println("</body>");
@@ -102,12 +145,20 @@ public class consultarPedidos extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String buscar = request.getParameter("usrBuscar");
         String[] estados = request.getParameterValues("estado");
-        if(estados != null) {
-            for(String i : estados) {
-                List<String> tupla = Arrays.asList(i.split(","));
-                editPedido(Integer.parseInt(tupla.get(1)), tupla.get(0));
+        
+        if(buscar == null){ //No se esta realizando la accion de buscar
+            if(estados != null) { //Hay items en la lista de pedidos
+                for(String i : estados) { //Actualizamos el estado de los pedidos se hayan cambiado o no
+                    List<String> tupla = Arrays.asList(i.split(","));
+                    editPedido(Integer.parseInt(tupla.get(1)), tupla.get(0));
+                }
             }
+        } else { //Se ha pulsado el botón de buscar usuario
+            //Obtenemos el nif introducido por el usuario y actualizamos la variable con el.
+            String nif = request.getParameter("nif");
+            if(nif != null) nifActual = nif;
         }
         processRequest(request, response);
     }
@@ -134,6 +185,13 @@ public class consultarPedidos extends HttpServlet {
         // If the calling of port operations may lead to race condition some synchronization is required.
         services.PedidoWS port = service.getPedidoWSPort();
         port.editPedido(numeroPedido, estado);
+    }
+
+    private java.util.List<services.Pedido> getPedidosAbonado(java.lang.String nif) {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        services.PedidoWS port = service.getPedidoWSPort();
+        return port.getPedidosAbonado(nif);
     }
 
 }

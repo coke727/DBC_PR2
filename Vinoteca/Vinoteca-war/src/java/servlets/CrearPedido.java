@@ -57,39 +57,48 @@ public class CrearPedido extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            HttpSession session = request.getSession();
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AbonadoSeleccion</title>");            
+            out.println("<title>Crear Pedido</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Creación de un pedido:</h1>");
             out.println("<h3>Añada las preferencias que desee pedir.</h3>");
             out.println("<div>");
-            out.println("<ul>");
-            List<Preferencia> preferencias = controladorAbonado.getPreferencias("jorcuad");
+            //Obtenemos el login con el que se logeo el usuario en la página de login
+            String login = (String) session.getAttribute("user");
+            //Obtenemos las preferencias del abonado
+            List<Preferencia> preferencias = controladorAbonado.getPreferencias(login);
             List<Vino> vinos = new ArrayList();
-            for(Preferencia item : preferencias) {
-                vinos.addAll(controladorVino.getVinos(item.getDenominacion(), ""+item.getCategoria()));
-                
-                for(Vino itemVino : vinos) {
-                    List<Referencia> referencias = controladorVino.getReferencias(itemVino.getId());
-                    for(Referencia ref : referencias) {
-                        out.println("<li><form method='post' action='CrearPedido'>");
-                        out.println(" <b>Denominacion:</b> "+item.getDenominacion()
-                                    +" <b>Precio:</b> "+ ref.getPrecio()
-                                    +" <input type=\"hidden\" name=\"referencia\" value='"+itemVino.getId()+","+ref.getCodigo()+"'/>"
-                                    + "<input name=\"add\" value=\"+\" type=\"submit\">");
-                        out.println("</form></li>");
+            for(Preferencia item : preferencias) { 
+                //Obtenemos los vinos que corresponden a las preferencias del abonado
+                List<Vino> vinosTmp = controladorVino.getVinos(item.getIddenominacion()+"", ""+item.getCategoria());
+                if(vinosTmp != null) {
+                    vinos.addAll(vinosTmp);
+                    out.println("<h3>Denominacion: "+item.getDenominacion()+" Categoria: "+ item.getCategoria()+"</h3>");
+                    out.println("<ul>");
+                    for(Vino itemVino : vinos) { //Obtenemos las referencias de ese vino y las mostramos
+                        List<Referencia> referencias = controladorVino.getReferencias(itemVino.getId());
+                        for(Referencia ref : referencias) {
+                            out.println("<li><form method='post' action='CrearPedido'>");
+                            out.println(" <b>Nombre:</b> " + itemVino.getNombrecomercial()
+                                        + " <b>Contenido (Cl):</b> " + ref.getContenidoencl()
+                                        + " <b>Precio:</b> "+ ref.getPrecio()
+                                        +" <input type=\"hidden\" name=\"referencia\" value='"+itemVino.getId()+","+ref.getCodigo()+"'/>"
+                                        + "<input name=\"add\" value=\"+\" type=\"submit\">");
+                            out.println("</form></li>");
+                        }
                     }
+                    out.println("</ul>");
+                    vinos = new ArrayList();
                 }
                 
-                vinos = new ArrayList();
             }
-            out.println("</ul>");
             out.println("</div>");
             out.println("<div><h1>Carrito:</h1></div>");
-            HttpSession session = request.getSession();
+            //Obtenemos el carrito y los datos que almacena.
             Carrito carrito = (Carrito) session.getAttribute("carrito");
             List<Vino> vinosCarrito = carrito.getVinos();
             List<Referencia> referenciasCarrito = carrito.getReferencias();
@@ -98,7 +107,7 @@ public class CrearPedido extends HttpServlet {
             out.println("<div>");
             if(referenciasCarrito.size() > 0) {
                 out.println("<ul>");
-                for(int i = 0 ; i < referenciasCarrito.size() ; i++) {
+                for(int i = 0 ; i < referenciasCarrito.size() ; i++) { //Mostramos las referencias del carrito
                     out.println("<li><form method='post' action='CrearPedido'>");
                     out.println(" <b>Nombre:</b> "+ vinosCarrito.get(i).getNombrecomercial()
                                +" <b>Precio:</b> "+ referenciasCarrito.get(i).getPrecio()
@@ -107,10 +116,11 @@ public class CrearPedido extends HttpServlet {
                                + "<input name=\"add\" value=\"-\" type=\"submit\">");
                     out.println("</form></li>");
                 }
+                out.println("<h3> Precio Total: " + carrito.getImporte() + "</h3>");
                 out.println("</ul>");
                 out.println("<form method='post' action='CrearPedido'><input name=\"create\" value=\"Crear Pedido\" type=\"submit\"></form>");
             } else {
-                out.println("<p>Vacío, añada elementos para crear el pedido.</p>");
+                out.println("<p>En estos momentos el carrito no tiene elementos.</p>");
             }
             out.println("</div>");
             out.println("</body>");
@@ -151,39 +161,43 @@ public class CrearPedido extends HttpServlet {
         
         String crearPedido = request.getParameter("create");
         System.out.println("---- CREAR ---" + crearPedido);
-        if(crearPedido != null) {
+        if(crearPedido != null) { //Se ha pulsado el boton de crear pedido.
+            //Creamos el pedido.
             String login = (String) session.getAttribute("user");
             Abonado abonado = controladorAbonado.getAbonado(login);
             Pedido pedido = new Pedido();
             pedido.setAbonado(abonado.getNumeroabonado());
-            int numeroPedido = (int) (Math.random() * 1000000);
+            int numeroPedido = (int) (Math.random() * 1000000); //Id aleatoreo
             pedido.setNumero(numeroPedido);
             pedido.setNif(abonado.getNif().getNif());
             pedido.setImporte(carrito.getImporte());
             newPedido(pedido);
             editPedido(numeroPedido, "P");
+            //Pasamos a la página de pedido realizado correctamente.
             RequestDispatcher rd = request.getRequestDispatcher("PedidoHecho");
             rd.forward(request,response);
-        } else {
+        } else { // Se ha añadido o eliminado una referencia del carrito.
             String addition = request.getParameter("add");
             System.out.println("FORMULARIO " + addition);
             String formValue = request.getParameter("referencia");
             if(formValue != null && addition != null) {
-                if(addition.equals("+")) {
+                if(addition.equals("+")) { //Añadimos referencia
+                    //El valor del formulario se compone de el id del vino y del id de la referencia separados por una coma.
                     List<String> tupla = Arrays.asList(formValue.split(","));
+                    //Obtenemos el vino y las referencias que corresponden a ese vino.
                     Vino vino = controladorVino.getVino(Integer.parseInt(tupla.get(0)));
                     List<Referencia> refs = controladorVino.getReferencias(Integer.parseInt(tupla.get(0)));
 
-                    for(Referencia item : refs) {
+                    for(Referencia item : refs) { //Obtenemos la referencias concreta que se ha seleccionado y la añadimos
                         if(item.getCodigo().equals(Integer.parseInt(tupla.get(1)))) {
                             carrito.addItem(item, vino);
                         }
                     }
-                } else if(addition.equals("-")) {
+                } else if(addition.equals("-")) { //Eliminamos referencia
                     List<String> tupla = Arrays.asList(formValue.split(","));
                     List<Referencia> refs = controladorVino.getReferencias(Integer.parseInt(tupla.get(0)));
 
-                    for(Referencia item : refs) {
+                    for(Referencia item : refs) { //Obtenemos la referencias concreta que se ha seleccionado y la eliminamos
                         if(item.getCodigo().equals(Integer.parseInt(tupla.get(1)))) {
                             carrito.removeItem(item);
                         }
@@ -204,7 +218,7 @@ public class CrearPedido extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>    
-
+    
     private void newPedido(services.Pedido pedido) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
